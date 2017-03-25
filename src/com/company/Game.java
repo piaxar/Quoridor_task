@@ -1,10 +1,9 @@
 package com.company;
 
-import com.company.enums.Direction;
+import com.company.enums.MoveDirection;
 import com.company.enums.WallDirection;
 import com.company.exceptions.InvalidMoveException;
 import com.company.exceptions.InvalidWallPlacement;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -13,6 +12,7 @@ import java.util.Queue;
  * Created by dell on 14.03.17.
  */
 public class Game {
+/*
 
     private final int INITIAL_WALLS_NUMBER = 10;
     private Boolean isFinished;
@@ -35,35 +35,41 @@ public class Game {
         }
     }
 
-    /**
+    */
+/**
      *
      * @return true if first player turn, false is second
-     */
+     *//*
+
     public boolean isFirstPlayerTurn(){
         return firstPlayerTurn;
     }
 
-    /**
+    */
+/**
      * Moves pawn of the player, which turn is now.
-     * @param direction of moving
+     * @param moveDirection of moving
      * @throws InvalidMoveException if move is invalid
-     */
-    public void nextTurnMove(Direction direction) throws InvalidMoveException {
+     *//*
+
+    public void nextTurnMove(MoveDirection moveDirection) throws InvalidMoveException {
         if (firstPlayerTurn == true){
-            player1Move(direction);
+            player1Move(moveDirection);
         } else {
-            player2Move(direction);
+            player2Move(moveDirection);
         }
         firstPlayerTurn = !firstPlayerTurn;
     }
 
-    /**
+    */
+/**
      * Place a wall and decrement wall count from current player
      * @param row
      * @param column
      * @param direction
      * @throws InvalidWallPlacement
-     */
+     *//*
+
     public void nextTurnWall(int row, int column, WallDirection direction) throws InvalidWallPlacement {
         if (firstPlayerTurn == true){
             player1PlaceWall(row, column, direction);
@@ -81,18 +87,22 @@ public class Game {
         isFinished = false;
     }
 
-    /**
+    */
+/**
      * Flag of finishing the game
      * @return true, if game is finished, false otherwise;
-     */
+     *//*
+
     public boolean isFinished(){
         return isFinished;
     }
 
-    /**
+    */
+/**
      * Checks if there is a winner
      * If Yes - set winner
-     */
+     *//*
+
     private void checkWinning(){
         System.out.println("in chesk winning "+ firstPlayer.getPosition().getRow()+" " + firstPlayer.getPosition().getColumn());
         if (firstPlayer.getPosition().getRow() == 8){
@@ -106,68 +116,76 @@ public class Game {
         }
     }
 
-    /**
+    */
+/**
      * Get winner
      * @return winner's name
-     */
+     *//*
+
     public String getWinner() {
         return winner.name;
     }
 
-    /**
-     * Move first player's pawn in given direction
-     * @param direction
+    */
+/**
+     * Move first player's pawn in given moveDirection
+     * @param moveDirection
      * @throws InvalidMoveException if move cannot be done
-     */
-    public void player1Move (Direction direction) throws InvalidMoveException {
-        // check if can move in that direction
-        Cell supposedCell = board.getFirstPlayerPosition().getNeighbours()[direction.index()];
+     *//*
+
+    public void player1Move (MoveDirection moveDirection) throws InvalidMoveException {
+        // check if can move in that moveDirection
+        Cell supposedCell = board.getFirstPlayerPosition().getNeighbours()[moveDirection.index()];
         if (supposedCell != null){
             if(supposedCell != board.getSecondPlayerPosition()){
                 // cell is available
                 board.setFirstPlayerPosition(supposedCell.getRow(), supposedCell.getColumn());
             } else {
                 // cell is occupied => jump over it
-                supposedCell = supposedCell.getNeighbours()[direction.index()];
+                supposedCell = supposedCell.getNeighbours()[moveDirection.index()];
                 // if there is a wall or end of the board
                 if (supposedCell == null) throw new InvalidMoveException("Can't jump over another pawn");
                 board.setFirstPlayerPosition(supposedCell.getRow(), supposedCell.getColumn());
             }
         } else {
-            throw new InvalidMoveException("Can't move pawn in given direction");
+            throw new InvalidMoveException("Can't move pawn in given moveDirection");
         }
         checkWinning();
     }
 
-    /**
-     * Move second player's pawn in given direction
-     * @param direction
+    */
+/**
+     * Move second player's pawn in given moveDirection
+     * @param moveDirection
      * @throws InvalidMoveException if move cannot be done
-     */
-    public void player2Move(Direction direction) throws InvalidMoveException {
-        // check if can move in that direction
-        Cell supposedCell = board.getSecondPlayerPosition().getNeighbours()[direction.index()];
+     *//*
+
+    public void player2Move(MoveDirection moveDirection) throws InvalidMoveException {
+        // check if can move in that moveDirection
+        Cell supposedCell = board.getSecondPlayerPosition().getNeighbours()[moveDirection.index()];
         if (supposedCell != null){
             if(supposedCell != board.getFirstPlayerPosition()){
                 // cell is available
                 board.setSecondPlayerPosition(supposedCell.getRow(), supposedCell.getColumn());
             } else {
                 // cell is occupied => jump over it
-                supposedCell = supposedCell.getNeighbours()[direction.index()];
+                supposedCell = supposedCell.getNeighbours()[moveDirection.index()];
                 // if there is a wall or end of the board
                 if (supposedCell == null) throw new InvalidMoveException("Can't jump over another pawn");
                 board.setSecondPlayerPosition(supposedCell.getRow(), supposedCell.getColumn());
             }
         } else {
-            throw new InvalidMoveException("Can't move pawn in given direction");
+            throw new InvalidMoveException("Can't move pawn in given moveDirection");
         }
         checkWinning();
     }
 
-    /**
+    */
+/**
      * Place a wall by first player
      * @throws InvalidWallPlacement if wall can't be placed
-     */
+     *//*
+
     public void player1PlaceWall(int row, int column, WallDirection direction) throws InvalidWallPlacement {
         if(firstPlayer.walls > 0){
             board.setWall(row, column, direction);
@@ -183,10 +201,12 @@ public class Game {
 
     }
 
-    /**
+    */
+/**
      * Place a wall by second player
      * @throws InvalidWallPlacement if wall can't be placed
-     */
+     *//*
+
     public void player2PlaceWall(int row, int column, WallDirection direction) throws InvalidWallPlacement {
         if(secondPlayer.walls > 0){
             board.setWall(row, column, direction);
@@ -245,4 +265,6 @@ public class Game {
             return secondPlayer.name;
         }
     }
+*/
+
 }

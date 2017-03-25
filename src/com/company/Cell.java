@@ -1,6 +1,6 @@
 package com.company;
 
-import com.company.enums.Direction;
+import com.company.enums.MoveDirection;
 
 /**
  * Created by dell on 08.03.17.
@@ -16,8 +16,8 @@ public class Cell {
         neighbours = new Cell[4];
     }
 
-    public void setNeighbour(Direction direction, Cell c){
-        neighbours[direction.index()] = c;
+    public void setNeighbour(MoveDirection moveDirection, Cell c){
+        neighbours[moveDirection.index()] = c;
     }
 
     public int getRow() {
@@ -29,8 +29,5 @@ public class Cell {
 
     public Cell[] getNeighbours(){
         return neighbours;
-    }
-    public String getCoordinates(){
-        return "("+ row +":"+ column +")";
     }
 }
