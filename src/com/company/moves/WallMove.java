@@ -86,7 +86,6 @@ public class WallMove extends Move {
             return false;
         }
         rollback();
-
         // everything is fine
         return true;
     }

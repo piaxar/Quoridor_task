@@ -2,10 +2,7 @@ package com.company;
 
 import com.company.enums.MoveDirection;
 import com.company.enums.Player;
-import com.company.exceptions.InvalidMoveException;
-import com.company.moves.WallMove;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -58,6 +55,14 @@ public class Board {
         return board;
     }
 
+    private void clearWeights(){
+        for (Cell[] c: board){
+            for (Cell cc: c){
+                cc.setCost(Integer.MAX_VALUE);
+            }
+        }
+    }
+
     public void setPlayerPosition(Player player, int row, int column){
         playerPositions[player.index()] = board[row][column];
     }
@@ -103,36 +108,39 @@ public class Board {
     }
 
     public boolean pathExists(){
-        if (!pathExistsFor(FIRST_PLAYER, 8)){
-            return false;
-        }
-        if (!pathExistsFor(SECOND_PLAYER, 0)){
-            return false;
-        }
-        return true;
+        return (shortestPath(FIRST_PLAYER) != -1 && shortestPath(SECOND_PLAYER) != -1);
     }
 
-    private boolean pathExistsFor(Player p, int winningRow){
+    public int shortestPath(Player p){
+        clearWeights();
+        int winningRow = p == FIRST_PLAYER ? 8:0;
+        if (playerPositions[p.index()].getRow() == winningRow){
+            return 0;
+        }
         Queue<Cell> openCells = new LinkedList<>();
-        LinkedList<Cell> visitedCells = new LinkedList();
-        openCells.add(getPlayerPosition(p));
+        Cell startingPoint = getPlayerPosition(p);
+        startingPoint.setCost(0);
+        openCells.add(startingPoint);
         while (openCells.size() > 0){
             Cell toGo = openCells.poll();
-            visitedCells.add(toGo);
             Cell[] neighbours = toGo.getNeighbours();
+
             for (Cell c: neighbours){
                 if (c!= null){
+
                     if (c.getRow() == winningRow){
-                        return true;
+                        return toGo.getCost() + 1;
+
                     } else {
-                        if (!visitedCells.contains(c)) {
+                        if (c.getCost() == Integer.MAX_VALUE) {
+                            c.setCost(toGo.getCost() + 1);
                             openCells.add(c);
                         }
                     }
                 }
             }
         }
-        return false;
+        return -1;
     }
 
     /**

@@ -9,11 +9,20 @@ public class Cell {
     private int row;
     private int column;
     private Cell[] neighbours;
+    private int cost = Integer.MAX_VALUE;
 
     Cell(int row, int column){
         this.row = row;
         this.column = column;
         neighbours = new Cell[4];
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 
     public void setNeighbour(MoveDirection moveDirection, Cell c){
