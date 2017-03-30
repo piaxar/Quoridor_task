@@ -1,6 +1,6 @@
 package com.company.moves;
 
-import com.company.Board;
+import com.company.game.Board;
 
 /**
  * Created by dell on 24.03.17.

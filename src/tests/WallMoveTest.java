@@ -1,6 +1,7 @@
 package tests;
 
-import com.company.Board;
+import com.company.game.Board;
+import com.company.enums.Player;
 import com.company.enums.WallDirection;
 import com.company.moves.WallMove;
 import org.junit.jupiter.api.Test;
@@ -17,16 +18,16 @@ class WallMoveTest {
         Board board = new Board();
         WallMove.clearAdmittedWallMoves();
 
-        WallMove wm = new WallMove(board, 5, 5, WallDirection.horizontal);
+        WallMove wm = new WallMove(board, Player.FIRST_PLAYER,5, 5, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
 
-        wm = new WallMove(board, 8, 7, WallDirection.horizontal);
+        wm = new WallMove(board, Player.FIRST_PLAYER,8, 7, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
 
-        wm = new WallMove(board, 8, 8, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 8, 8, WallDirection.horizontal);
         assertEquals(false, wm.isValid());
 
-        wm = new WallMove(board, 5, 5, WallDirection.vertical);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 5, 5, WallDirection.vertical);
         assertEquals(true, wm.isValid());
     }
 
@@ -35,24 +36,24 @@ class WallMoveTest {
         Board board = new Board();
         WallMove.clearAdmittedWallMoves();
 
-        WallMove wm = new WallMove(board, 2, 1, WallDirection.horizontal);
+        WallMove wm = new WallMove(board, Player.FIRST_PLAYER,2, 1, WallDirection.horizontal);
         wm.admit();
-        wm = new WallMove(board, 2, 3, WallDirection.horizontal);
+        wm = new WallMove(board, Player.FIRST_PLAYER,2, 3, WallDirection.horizontal);
         wm.admit();
-        wm = new WallMove(board, 2, 3, WallDirection.vertical);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 2, 3, WallDirection.vertical);
         assertEquals(true, wm.isValid());
         wm.admit();
 
-        wm = new WallMove(board, 3, 1, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 3, 1, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
 
-        wm = new WallMove(board, 3, 1, WallDirection.vertical);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 3, 1, WallDirection.vertical);
         assertEquals(true, wm.isValid());
 
-        wm = new WallMove(board, 2, 4, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 2, 4, WallDirection.horizontal);
         assertEquals(false, wm.isValid());
 
-        wm = new WallMove(board, 2, 3, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 2, 3, WallDirection.horizontal);
         assertEquals(false, wm.isValid());
     }
 
@@ -61,22 +62,22 @@ class WallMoveTest {
         Board board = new Board();
         WallMove.clearAdmittedWallMoves();
 
-        WallMove wm = new WallMove(board, 5, 0, WallDirection.horizontal);
+        WallMove wm = new WallMove(board, Player.FIRST_PLAYER,5, 0, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
         wm.admit();
-        wm = new WallMove(board, 5, 2, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 5, 2, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
         wm.admit();
-        wm = new WallMove(board, 5, 4, WallDirection.horizontal);
+        wm = new WallMove(board, Player.FIRST_PLAYER,5, 4, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
         wm.admit();
-        wm = new WallMove(board, 5, 6, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 5, 6, WallDirection.horizontal);
         assertEquals(true, wm.isValid());
         wm.admit();
-        wm = new WallMove(board, 4, 8, WallDirection.vertical);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 4, 8, WallDirection.vertical);
         assertEquals(true, wm.isValid());
         wm.admit();
-        wm = new WallMove(board, 3, 7, WallDirection.horizontal);
+        wm = new WallMove(board,Player.FIRST_PLAYER, 3, 7, WallDirection.horizontal);
         assertEquals(false, wm.isValid());
     }
 

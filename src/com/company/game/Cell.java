@@ -1,4 +1,4 @@
-package com.company;
+package com.company.game;
 
 import com.company.enums.MoveDirection;
 

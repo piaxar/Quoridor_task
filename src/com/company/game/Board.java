@@ -1,4 +1,4 @@
-package com.company;
+package com.company.game;
 
 import com.company.enums.MoveDirection;
 import com.company.enums.Player;
@@ -16,10 +16,12 @@ public class Board {
 
     private Cell[][] board;
     private Cell[] playerPositions;
+    private int[] wallsLeft;
 
     public Board() {
         board = new Cell[9][9];
         playerPositions = new Cell[2];
+        wallsLeft = new int[]{10, 10};
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -55,6 +57,9 @@ public class Board {
         return board;
     }
 
+    /**
+     * As we have same board for all findingPath trials, we need to clear weights in all cells
+     */
     private void clearWeights(){
         for (Cell[] c: board){
             for (Cell cc: c){
@@ -69,6 +74,18 @@ public class Board {
 
     public void setPlayerPosition(Player player, Cell position){
         playerPositions[player.index()] = position;
+    }
+
+    public int getWallsLeft(Player player){
+        return wallsLeft[player.index()];
+    }
+
+    public void incrementWalls(Player player){
+        wallsLeft[player.index()]++;
+    }
+
+    public void decrementWall(Player player){
+        wallsLeft[player.index()]++;
     }
 
     /**

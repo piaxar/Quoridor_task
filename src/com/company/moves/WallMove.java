@@ -1,7 +1,8 @@
 package com.company.moves;
 
-import com.company.Board;
-import com.company.Cell;
+import com.company.game.Board;
+import com.company.game.Cell;
+import com.company.enums.Player;
 import com.company.enums.WallDirection;
 
 import java.util.ArrayList;
@@ -16,17 +17,19 @@ public class WallMove extends Move {
     private int anchorRow;
     private int anchorColumn;
     private WallDirection direction;
+    private Player player;
     private static ArrayList<WallMove> admittedWallMoves;
 
     public static void clearAdmittedWallMoves(){
         admittedWallMoves = new ArrayList<>();
     }
 
-    public WallMove(Board board, int anchorRow, int anchorColumn, WallDirection direction) {
+    public WallMove(Board board, Player player, int anchorRow, int anchorColumn, WallDirection direction) {
         this.anchorRow = anchorRow;
         this.anchorColumn = anchorColumn;
         this.direction = direction;
         this.board = board;
+        this.player = player;
 
         if (admittedWallMoves == null){
             admittedWallMoves = new ArrayList<>(20);
@@ -39,6 +42,7 @@ public class WallMove extends Move {
      */
     @Override
     public Boolean isValid(){
+        if (board.getWallsLeft(player) == 0) return false;
         if (!Board.cellValid(anchorRow, anchorColumn)){
             return false;
         }
@@ -105,6 +109,7 @@ public class WallMove extends Move {
             mBoard[anchorRow - 1][anchorColumn - 1].setNeighbour(RIGHT, null);
         }
         admittedWallMoves.add(this);
+        board.decrementWall(player);
     }
 
     @Override
@@ -122,5 +127,6 @@ public class WallMove extends Move {
             mBoard[anchorRow - 1][anchorColumn - 1].setNeighbour(RIGHT, mBoard[anchorRow - 1][anchorColumn]);
         }
         admittedWallMoves.remove(this);
+        board.incrementWalls(player);
     }
 }

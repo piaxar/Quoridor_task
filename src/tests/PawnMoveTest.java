@@ -1,6 +1,6 @@
 package tests;
 
-import com.company.Board;
+import com.company.game.Board;
 import com.company.enums.MoveDirection;
 import com.company.enums.Player;
 import com.company.moves.PawnMove;

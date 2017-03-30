@@ -1,7 +1,7 @@
 package com.company.moves;
 
-import com.company.Board;
-import com.company.Cell;
+import com.company.game.Board;
+import com.company.game.Cell;
 import com.company.enums.MoveDirection;
 import com.company.enums.Player;
 
