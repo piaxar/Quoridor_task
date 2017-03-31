@@ -1,9 +1,11 @@
 package tests;
 
+import com.company.enums.WallDirection;
 import com.company.game.Board;
 import com.company.enums.MoveDirection;
 import com.company.enums.Player;
 import com.company.moves.PawnMove;
+import com.company.moves.WallMove;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +44,17 @@ class PawnMoveTest {
 
         board.getBoard()[0][4].getNeighbours()[MoveDirection.UP.index()] = null;
         pm = new PawnMove(Player.FIRST_PLAYER, board, 1, 4);
+        assertEquals(false, pm.isValid());
+    }
+
+    @Test
+    void bugOccursTest(){
+        Board board = new Board();
+        board.setPlayerPosition(Player.FIRST_PLAYER, 3, 5);
+        board.setPlayerPosition(Player.SECOND_PLAYER, 3, 6);
+        WallMove wm = new WallMove(board, Player.FIRST_PLAYER, 3, 6, WallDirection.horizontal);
+        wm.admit();
+        PawnMove pm = new PawnMove(Player.SECOND_PLAYER, board, 3, 5);
         assertEquals(false, pm.isValid());
     }
 

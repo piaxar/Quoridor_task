@@ -9,12 +9,13 @@ import com.company.moves.Move;
  */
 public abstract class GameAgent {
     protected Board board;
-    protected Player player;
+    protected Player maximizerPlayer, minimizerPlayer;
     protected int wallsLeft = 10;
 
-    public GameAgent(Board board, Player player){
+    public GameAgent(Board board, Player maximizerPlayer, Player minimizerPlayer){
         this.board = board;
-        this.player = player;
+        this.maximizerPlayer = maximizerPlayer;
+        this.minimizerPlayer = minimizerPlayer;
     }
     public abstract Move nextMove();
 }

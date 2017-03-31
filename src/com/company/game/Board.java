@@ -84,8 +84,8 @@ public class Board {
         wallsLeft[player.index()]++;
     }
 
-    public void decrementWall(Player player){
-        wallsLeft[player.index()]++;
+    public void decrementWalls(Player player){
+        wallsLeft[player.index()]--;
     }
 
     /**
@@ -107,6 +107,10 @@ public class Board {
             return getPlayerPosition(SECOND_PLAYER);
         }
         return getPlayerPosition(FIRST_PLAYER);
+    }
+
+    public Player getAnotherPlayer(Player player){
+        return player == FIRST_PLAYER ? SECOND_PLAYER:FIRST_PLAYER;
     }
 
     /**

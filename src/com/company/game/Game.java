@@ -1,6 +1,8 @@
 package com.company.game;
 
 import com.company.agents.GameAgent;
+import com.company.agents.MinMaxAgent;
+import com.company.agents.UserAgent;
 import com.company.enums.Player;
 import com.company.moves.Move;
 
@@ -8,20 +10,31 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Game {
 
+    public enum Players{
+        MinMax, User
+    }
     private GameAgent firstAgent;
     private GameAgent secondAgent;
     private Board board;
     private Player winner;
 
-    public <T extends GameAgent> Game(Class<T> firstAgent, Class<T> secondAgent){
+    public Game(Players firstAgent, Players secondAgent){
         board = new Board();
-        try {
-            this.firstAgent = firstAgent.getDeclaredConstructor(Board.class, Player.class)
-                    .newInstance(board, Player.FIRST_PLAYER);
-            this.secondAgent = secondAgent.getDeclaredConstructor(Board.class, Player.class)
-                    .newInstance(board, Player.SECOND_PLAYER);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e){
-            e.printStackTrace();
+        switch (firstAgent){
+            case MinMax:
+                this.firstAgent = new MinMaxAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, 2);
+                break;
+            case User:
+                this.firstAgent = new UserAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER);
+                break;
+        }
+        switch (secondAgent){
+            case MinMax:
+                this.secondAgent = new MinMaxAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, 2);
+                break;
+            case User:
+                this.secondAgent = new UserAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER);
+                break;
         }
     }
 

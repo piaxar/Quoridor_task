@@ -20,6 +20,11 @@ public class WallMove extends Move {
     private Player player;
     private static ArrayList<WallMove> admittedWallMoves;
 
+    @Override
+    public String toString() {
+        return "wall "+anchorRow+":"+anchorColumn+" "+player.toString()+" "+direction.toString();
+    }
+
     public static void clearAdmittedWallMoves(){
         admittedWallMoves = new ArrayList<>();
     }
@@ -109,7 +114,7 @@ public class WallMove extends Move {
             mBoard[anchorRow - 1][anchorColumn - 1].setNeighbour(RIGHT, null);
         }
         admittedWallMoves.add(this);
-        board.decrementWall(player);
+        board.decrementWalls(player);
     }
 
     @Override

@@ -19,6 +19,10 @@ public class PawnMove extends Move{
     private Cell from;
     private Cell to;
 
+    @Override
+    public String toString() {
+        return player.toString() + " from "+rowFrom+":"+columnFrom+" to "+rowTo+":"+columnTo;
+    }
 
     public PawnMove(Player player, Board board, int rowTo, int columnTo) {
         this.player = player;
@@ -40,7 +44,8 @@ public class PawnMove extends Move{
             return false;
         }
         // occupation checking
-        if (board.getPlayerPosition(player) == board.getAnotherPlayerPosition(player)){
+        if (rowTo == board.getAnotherPlayerPosition(player).getRow() &&
+                columnTo == board.getAnotherPlayerPosition(player).getColumn()){
             return false;
         }
         // if aim cell is one of the neighbours
