@@ -2,6 +2,10 @@ package com.company.game;
 
 import com.company.enums.MoveDirection;
 import com.company.enums.Player;
+import com.company.enums.WallDirection;
+import com.company.moves.Move;
+import com.company.moves.PawnMove;
+import com.company.moves.WallMove;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -17,11 +21,12 @@ public class Board {
     private Cell[][] board;
     private Cell[] playerPositions;
     private int[] wallsLeft;
+    private final int WALLS = 10;
 
     public Board() {
         board = new Cell[9][9];
         playerPositions = new Cell[2];
-        wallsLeft = new int[]{10, 10};
+        wallsLeft = new int[]{WALLS, WALLS};
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -53,6 +58,12 @@ public class Board {
         playerPositions[SECOND_PLAYER.index()] = board[8][4];
     }
 
+    public boolean inWinningPosition(Player player){
+        if (player == FIRST_PLAYER && getPlayerPosition(FIRST_PLAYER).getRow() == 8) return true;
+        if (player == SECOND_PLAYER && getPlayerPosition(SECOND_PLAYER).getRow() == 0) return true;
+        return false;
+    }
+
     public Cell[][] getBoard(){
         return board;
     }
@@ -72,8 +83,48 @@ public class Board {
         playerPositions[player.index()] = board[row][column];
     }
 
-    public void setPlayerPosition(Player player, Cell position){
-        playerPositions[player.index()] = position;
+
+    public LinkedList<PawnMove> getAvailablePawnMoves(Player player){
+        LinkedList<PawnMove> availableMoves = new LinkedList<>();
+
+        int row = getPlayerPosition(player).getRow();
+        int column = getPlayerPosition(player).getColumn();
+        // add all possible pawn moves
+        for (int i = -1; i < 2; i++){
+            for (int j = -1; j < 2; j++){
+                PawnMove nm = new PawnMove(player, this, row + i, column + j);
+                if (nm.isValid()){
+                    availableMoves.add(nm);
+                }
+            }
+        }
+        PawnMove jumpMove = new PawnMove(player, this, row + 2, column);
+        if (jumpMove.isValid()) availableMoves.add(jumpMove);
+        jumpMove = new PawnMove(player, this, row + -2, column);
+        if (jumpMove.isValid()) availableMoves.add(jumpMove);
+        jumpMove = new PawnMove(player, this, row, column + 2);
+        if (jumpMove.isValid()) availableMoves.add(jumpMove);
+        jumpMove = new PawnMove(player, this, row, column - 2);
+        if (jumpMove.isValid()) availableMoves.add(jumpMove);
+
+        return availableMoves;
+
+    }
+    public LinkedList<WallMove> getAvailableWallMoves(Player player){
+        LinkedList<WallMove> availableMoves = new LinkedList<>();
+
+        // add all possible wall moves
+        for (int i = 0; i < 9; i++){
+            for (int j = 0; j < 9; j++){
+                for (WallDirection wd: WallDirection.values()){
+                    WallMove nm = new WallMove(this, player, i, j, wd);
+                    if (nm.isValid()){
+                        availableMoves.add(nm);
+                    }
+                }
+            }
+        }
+        return availableMoves;
     }
 
     public int getWallsLeft(Player player){
@@ -107,10 +158,6 @@ public class Board {
             return getPlayerPosition(SECOND_PLAYER);
         }
         return getPlayerPosition(FIRST_PLAYER);
-    }
-
-    public Player getAnotherPlayer(Player player){
-        return player == FIRST_PLAYER ? SECOND_PLAYER:FIRST_PLAYER;
     }
 
     /**

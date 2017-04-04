@@ -6,34 +6,32 @@ import com.company.agents.UserAgent;
 import com.company.enums.Player;
 import com.company.moves.Move;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class Game {
 
     public enum Players{
-        MinMax, User
+        MinMax, User, AlphaBeta
     }
     private GameAgent firstAgent;
     private GameAgent secondAgent;
     private Board board;
     private Player winner;
 
-    public Game(Players firstAgent, Players secondAgent){
+    public Game(Players firstAgent, int firstAgentDepth, Players secondAgent, int secondAgentDepth){
         board = new Board();
         switch (firstAgent){
-            case MinMax:
-                this.firstAgent = new MinMaxAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, 2);
-                break;
             case User:
                 this.firstAgent = new UserAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER);
                 break;
+            case MinMax:
+                this.firstAgent = new MinMaxAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, firstAgentDepth);
+                break;
         }
         switch (secondAgent){
-            case MinMax:
-                this.secondAgent = new MinMaxAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, 2);
-                break;
             case User:
                 this.secondAgent = new UserAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER);
+                break;
+            case MinMax:
+                this.secondAgent = new MinMaxAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, secondAgentDepth);
                 break;
         }
     }
@@ -43,10 +41,14 @@ public class Game {
             board.printBoard();
             Move nextMove = firstAgent.nextMove();
             nextMove.admit();
+            System.out.println("length for "+ Player.FIRST_PLAYER.toString()+" = "+board.shortestPath(Player.FIRST_PLAYER));
+            System.out.println("length for "+ Player.SECOND_PLAYER.toString()+" = "+board.shortestPath(Player.SECOND_PLAYER));
             if (winnerFound()) return;
             board.printBoard();
             nextMove = secondAgent.nextMove();
             nextMove.admit();
+            System.out.println("length for "+ Player.FIRST_PLAYER.toString()+" = "+board.shortestPath(Player.FIRST_PLAYER));
+            System.out.println("length for "+ Player.SECOND_PLAYER.toString()+" = "+board.shortestPath(Player.SECOND_PLAYER));
             if (winnerFound()) return;
         }
     }

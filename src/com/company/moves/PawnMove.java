@@ -15,6 +15,7 @@ public class PawnMove extends Move{
     private int rowTo;
     private int columnFrom;
     private int columnTo;
+    public Boolean isLeaf;
 
     private Cell from;
     private Cell to;
@@ -35,6 +36,10 @@ public class PawnMove extends Move{
         }
         rowFrom = from.getRow();
         columnFrom = from.getColumn();
+
+        if (player == Player.FIRST_PLAYER && rowTo == 8) isLeaf = true; else
+        if (player == Player.SECOND_PLAYER && rowTo == 0) isLeaf = true; else
+            isLeaf = false;
     }
 
     @Override

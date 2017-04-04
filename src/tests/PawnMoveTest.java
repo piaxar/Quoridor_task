@@ -86,4 +86,14 @@ class PawnMoveTest {
         assertEquals(false, pm.isValid());
     }
 
+    @Test
+    void gameCaseTest(){
+        Board board = new Board();
+        board.setPlayerPosition(Player.FIRST_PLAYER, 7, 7);
+        WallMove wm = new WallMove(board, Player.FIRST_PLAYER, 8, 6, WallDirection.horizontal);
+        wm.admit();
+        PawnMove pm = new PawnMove(Player.FIRST_PLAYER, board, 7, 8);
+        assertEquals(true, pm.isValid());
+    }
+
 }

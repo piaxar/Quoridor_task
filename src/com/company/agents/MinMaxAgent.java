@@ -1,22 +1,19 @@
 package com.company.agents;
 
-import com.company.game.Board;
 import com.company.enums.Player;
-import com.company.enums.WallDirection;
+import com.company.game.Board;
 import com.company.moves.Move;
 import com.company.moves.PawnMove;
 import com.company.moves.WallMove;
 
 import java.util.LinkedList;
 
-public class MinMaxAgent extends GameAgent{
+/**
+ * Created by dell on 03.04.17.
+ */
+public class MinMaxAgent extends GameAgent {
 
-    private Move selected;
-    private int depth;
-
-    private enum MinMax{
-        MIN, MAX;
-    }
+    int depth;
 
     public MinMaxAgent(Board board, Player maximizerPlayer, Player minimizerPlayer, int depth) {
         super(board, maximizerPlayer, minimizerPlayer);
@@ -24,222 +21,77 @@ public class MinMaxAgent extends GameAgent{
     }
 
     @Override
-    public Move nextMove(){
-        Node root = new Node(null);
-        int leaf  = minMaxValue(root, depth, true);
-        //System.out.println("selected: "+leaf);
-        System.out.println(root.bestMove.toString());
-        return root.bestMove;
+    public Move nextMove() {
+        Node root = new Node(false, true, null);
+        minimax(root, depth);
+        System.out.println(root.selectedMove.toString());
+        return root.selectedMove;
     }
 
-    public int minMaxValue(Node node, int depth, Boolean maximizingPlayer){
+    /**
+     * the minimax value of n, searched to depth d
+     */
+    double minimax(Node n, int d) {
+        if (n.move != null) n.move.admit();
+        double result;
 
-        if (node.move != null) {
-            node.move.admit();
-            //System.out.println("Im in node with depth "+depth+" move to come here is "+node.move.toString());
-        }
+        if (n.isLeaf || d == 0)
+            result = n.evaluate();
         else {
-            //System.out.println("Im in node with depth "+depth);
-        }
-        if (depth == 0){
-            int res = node.getHeuristicValue();
-            if (node.move != null) node.move.rollback();
-            //System.out.println("My heuristic value is" + res);
-
-            return res;
-        }
-
-        if (maximizingPlayer){
-            int bestValue = Integer.MIN_VALUE;
-            for(Node n: node.getChildren(maximizingPlayer)){
-                int localBest = minMaxValue(n, depth -1, false);
-                if (localBest >= bestValue){
-                    //System.out.println("as a maximizer ="+maximizingPlayer.toString()+"new loc best ="+localBest);
-                    bestValue = localBest;
-                    node.bestMove = n.move;
+            if (n.isMaxNode) { // maximizer
+                double v = -Double.MAX_VALUE;
+                for (Node child : n.children(maximizerPlayer)) {
+                    double localValue = minimax(child, d - 1);
+                    if (localValue > v) {
+                        n.selectedMove = child.move;
+                        v = localValue;
+                    }
                 }
-            }
-            if (node.move != null) node.move.rollback();
-            return bestValue;
-
-        } else /* Minimizing player */{
-            int bestValue = Integer.MAX_VALUE;
-            for(Node n: node.getChildren(maximizingPlayer)){
-                int localBest = minMaxValue(n, depth -1, true);
-                if (localBest <= bestValue){
-                    //System.out.println("as a maximizer ="+maximizingPlayer.toString()+"new loc best ="+localBest);
-                    bestValue = localBest;
-                    node.bestMove = n.move;
+                result = v;
+            } else { // minimizer
+                double v = Double.MAX_VALUE;
+                for (Node child : n.children(minimizerPlayer)) {
+                    double localValue = minimax(child, d - 1);
+                    if (localValue < v) {
+                        n.selectedMove = child.move;
+                        v = localValue;
+                    }
                 }
+                result = v;
             }
-            if (node.move != null) node.move.rollback();
-            return bestValue;
         }
-
+        if (n.move != null) n.move.rollback();
+        return result;
     }
 
     class Node{
-        LinkedList<Node> children;
-        Move move;
-        Move bestMove;
+        protected boolean isLeaf, isMaxNode;
+        protected Move move;
+        protected Move selectedMove;
 
-        Node(Move move){
+        public Node(boolean isLeaf, boolean isMaxNode, Move move) {
+            this.isLeaf = isLeaf;
+            this.isMaxNode = isMaxNode;
             this.move = move;
-            children = new LinkedList<>();
         }
 
-        LinkedList<Node> getChildren(Boolean maximizer){
-            Player currPlayer = maximizer ? maximizerPlayer:minimizerPlayer;
-            for (Move m: getAvailableMoves(currPlayer)){
-                if (m.isValid()) children.add(new Node(m));
+        LinkedList<Node> children(Player player){
+            LinkedList<Node> children = new LinkedList<>();
+            for (PawnMove m: board.getAvailablePawnMoves(player)){
+                children.add(new Node(m.isLeaf, !isMaxNode, m));
             }
+            for (WallMove m: board.getAvailableWallMoves(player)){
+                children.add(new Node(false, !isMaxNode, m));
+            }
+
             return children;
         }
 
-        public int getHeuristicValue() {
-            int shpathForMax = board.shortestPath(maximizerPlayer);
-            int shpathForMin = board.shortestPath(minimizerPlayer);
-            //System.out.println("Shortest path for max = "+ shpathForMax+" == "+ maximizerPlayer.toString());
-            //System.out.println("Shortest path for min = "+ shpathForMin+" == "+ minimizerPlayer.toString());
-            return shpathForMin - shpathForMax;
+        Double evaluate(){
+            // if isMaxNode - maximizer
+            if (isLeaf && board.inWinningPosition(maximizerPlayer)) return 1000.0;
+            if (isLeaf && board.inWinningPosition(minimizerPlayer)) return -1000.0;
+            return 1.2/(board.shortestPath(maximizerPlayer)) - 0.9/(board.shortestPath(minimizerPlayer));
         }
     }
-
-//    Move getBestMove(){
-//        Move bestMove = null;
-//        int score = Integer.MIN_VALUE;
-//        for (Move m:getAvailableMoves(player)){
-//            int nScore = getScore(m, MinMax.MIN, board.getAnotherPlayer(player), 0);
-//            if (nScore > score){
-//                bestMove = m;
-//                score = nScore;
-//            }
-//        }
-//        return bestMove;
-//    }
-//
-//    int getScore(Move move, MinMax minMax, Player player, int depth){
-//        move.admit();
-//        int score;
-//        if (depth > 0) {
-//            score = minMax == MinMax.MAX ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-//            Player anotherPlayer = board.getAnotherPlayer(player);
-//            if (minMax == MinMax.MAX) {
-//                for (Move m : getAvailableMoves(player)) {
-//                    int newScore = getScore(m, MinMax.MIN, anotherPlayer, depth - 1);
-//                    if (newScore > score) {
-//                        score = newScore;
-//                    }
-//                }
-//            } else {
-//                    for (Move m : getAvailableMoves(player)) {
-//                    int newScore = getScore(m, MinMax.MAX, anotherPlayer, depth - 1);
-//                    if (newScore < score) {
-//                        score = newScore;
-//                    }
-//                }
-//            }
-//        } else {
-//            score = board.shortestPath(board.getAnotherPlayer(player)) - board.shortestPath(player);
-//        }
-//        move.rollback();
-//        return score;
-//    }
-//
-//    public Move find(){
-//        BoardState root = new BoardState(board, null, MinMax.MAX, 2);
-//        root.calculateSiblings();
-//        return root.bestSibling.move;
-//    }
-//
-//    class BoardState{
-//        Board board;
-//        LinkedList<BoardState> siblings;
-//        BoardState bestSibling;
-//        Move move;
-//        MinMax function;
-//        Player interestedPlayer;
-//        int depth;
-//        int score;
-//
-//        public BoardState(Board board, Move move, MinMax function, int depth) {
-//            this.board = board;
-//            this.move = move;
-//            this.function = function;
-//            this.depth = depth;
-//            siblings = new LinkedList<>();
-//            interestedPlayer = function == MinMax.MAX ? player: board.getAnotherPlayer(player);
-//            if (depth > 0) {
-//                for (Move m : getAvailableMoves(interestedPlayer)) {
-//                    siblings.add(new BoardState(board, m, MinMax.getAnoter(function), depth - 1));
-//                }
-//            }
-//        }
-//
-//        public void calculateSiblings(){
-//            if (depth == 0){
-//                score = Heuristic.getScore(board, interestedPlayer);
-//            } else {
-//                if (move != null) move.admit();
-//                for (BoardState bs: siblings){
-//                    bs.calculateSiblings();
-//                }
-//                if (function == MinMax.MAX){
-//                    int localBest = Integer.MIN_VALUE;
-//                    for (BoardState bs: siblings){
-//                        if (bs.score > localBest){
-//                            score = bs.score;
-//                            bestSibling = bs;
-//                        }
-//                    }
-//                } else {
-//                    int localBest = Integer.MAX_VALUE;
-//                    for (BoardState bs: siblings){
-//                        if (bs.score < localBest){
-//                            score = bs.score;
-//                            bestSibling = bs;
-//                        }
-//                    }
-//                }
-//                if (move != null) move.rollback();
-//            }
-//        }
-//    }
-
-    public LinkedList<Move> getAvailableMoves(Player player){
-        LinkedList<Move> availableMoves = new LinkedList<>();
-        int row = board.getPlayerPosition(player).getRow();
-        int column = board.getPlayerPosition(player).getColumn();
-        // add all possible pawn moves
-        for (int i = -1; i < 2; i++){
-            for (int j = -1; j < 2; j++){
-                Move nm = new PawnMove(player, board, row + i, column + j);
-                if (nm.isValid()){
-                    availableMoves.add(nm);
-                }
-            }
-        }
-        Move jumpMove = new PawnMove(player, board, row + 2, column);
-        if (jumpMove.isValid()) availableMoves.add(jumpMove);
-        jumpMove = new PawnMove(player, board, row + -2, column);
-        if (jumpMove.isValid()) availableMoves.add(jumpMove);
-        jumpMove = new PawnMove(player, board, row, column + 2);
-        if (jumpMove.isValid()) availableMoves.add(jumpMove);
-        jumpMove = new PawnMove(player, board, row, column - 2);
-        if (jumpMove.isValid()) availableMoves.add(jumpMove);
-
-        // add all possible wall moves
-        for (int i = 0; i < 9; i++){
-            for (int j = 0; j < 9; j++){
-                for (WallDirection wd: WallDirection.values()){
-                    Move nm = new WallMove(board, player, i, j, wd);
-                    if (nm.isValid()){
-                        availableMoves.add(nm);
-                    }
-                }
-            }
-        }
-        return availableMoves;
-    }
-
 }

@@ -10,7 +10,6 @@ import com.company.moves.Move;
 public abstract class GameAgent {
     protected Board board;
     protected Player maximizerPlayer, minimizerPlayer;
-    protected int wallsLeft = 10;
 
     public GameAgent(Board board, Player maximizerPlayer, Player minimizerPlayer){
         this.board = board;
