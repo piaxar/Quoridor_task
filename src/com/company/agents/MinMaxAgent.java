@@ -7,6 +7,7 @@ import com.company.moves.PawnMove;
 import com.company.moves.WallMove;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  * Created by dell on 03.04.17.
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 public class MinMaxAgent extends GameAgent {
 
     int depth;
+    Random random = new Random();
 
     public MinMaxAgent(Board board, Player maximizerPlayer, Player minimizerPlayer, int depth) {
         super(board, maximizerPlayer, minimizerPlayer);
@@ -42,7 +44,10 @@ public class MinMaxAgent extends GameAgent {
                 double v = -Double.MAX_VALUE;
                 for (Node child : n.children(maximizerPlayer)) {
                     double localValue = minimax(child, d - 1);
-                    if (localValue > v) {
+                    if (localValue == v && random.nextBoolean() && n.selectedMove != null){
+                        n.selectedMove = child.move;
+                        v = localValue;
+                    } else if (localValue > v) {
                         n.selectedMove = child.move;
                         v = localValue;
                     }
@@ -52,7 +57,10 @@ public class MinMaxAgent extends GameAgent {
                 double v = Double.MAX_VALUE;
                 for (Node child : n.children(minimizerPlayer)) {
                     double localValue = minimax(child, d - 1);
-                    if (localValue < v) {
+                    if (localValue == v && random.nextBoolean() && n.selectedMove != null){
+                        n.selectedMove = child.move;
+                        v = localValue;
+                    } else if (localValue < v) {
                         n.selectedMove = child.move;
                         v = localValue;
                     }

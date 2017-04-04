@@ -1,5 +1,6 @@
 package com.company.game;
 
+import com.company.agents.AlphaBetaAgent;
 import com.company.agents.GameAgent;
 import com.company.agents.MinMaxAgent;
 import com.company.agents.UserAgent;
@@ -25,6 +26,9 @@ public class Game {
             case MinMax:
                 this.firstAgent = new MinMaxAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, firstAgentDepth);
                 break;
+            case AlphaBeta:
+                this.firstAgent = new AlphaBetaAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, firstAgentDepth);
+                break;
         }
         switch (secondAgent){
             case User:
@@ -33,6 +37,10 @@ public class Game {
             case MinMax:
                 this.secondAgent = new MinMaxAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, secondAgentDepth);
                 break;
+            case AlphaBeta:
+                this.secondAgent = new AlphaBetaAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, secondAgentDepth);
+                break;
+
         }
     }
 
@@ -41,14 +49,10 @@ public class Game {
             board.printBoard();
             Move nextMove = firstAgent.nextMove();
             nextMove.admit();
-            System.out.println("length for "+ Player.FIRST_PLAYER.toString()+" = "+board.shortestPath(Player.FIRST_PLAYER));
-            System.out.println("length for "+ Player.SECOND_PLAYER.toString()+" = "+board.shortestPath(Player.SECOND_PLAYER));
             if (winnerFound()) return;
             board.printBoard();
             nextMove = secondAgent.nextMove();
             nextMove.admit();
-            System.out.println("length for "+ Player.FIRST_PLAYER.toString()+" = "+board.shortestPath(Player.FIRST_PLAYER));
-            System.out.println("length for "+ Player.SECOND_PLAYER.toString()+" = "+board.shortestPath(Player.SECOND_PLAYER));
             if (winnerFound()) return;
         }
     }
