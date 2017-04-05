@@ -1,16 +1,13 @@
 package com.company.game;
 
-import com.company.agents.AlphaBetaAgent;
-import com.company.agents.GameAgent;
-import com.company.agents.MinMaxAgent;
-import com.company.agents.UserAgent;
+import com.company.agents.*;
 import com.company.enums.Player;
 import com.company.moves.Move;
 
 public class Game {
 
     public enum Players{
-        MinMax, User, AlphaBeta
+        MinMax, User, AlphaBeta, MCST
     }
     private GameAgent firstAgent;
     private GameAgent secondAgent;
@@ -29,6 +26,9 @@ public class Game {
             case AlphaBeta:
                 this.firstAgent = new AlphaBetaAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, firstAgentDepth);
                 break;
+            case MCST:
+                this.firstAgent = new MonteCarloAgent(board, Player.FIRST_PLAYER, Player.SECOND_PLAYER, firstAgentDepth*1000);
+                break;
         }
         switch (secondAgent){
             case User:
@@ -40,6 +40,8 @@ public class Game {
             case AlphaBeta:
                 this.secondAgent = new AlphaBetaAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, secondAgentDepth);
                 break;
+            case MCST:
+                this.secondAgent = new MonteCarloAgent(board, Player.SECOND_PLAYER, Player.FIRST_PLAYER, secondAgentDepth*1000);
 
         }
     }
@@ -48,10 +50,12 @@ public class Game {
         while (true) {
             board.printBoard();
             Move nextMove = firstAgent.nextMove();
+            System.out.println(nextMove.toString());
             nextMove.admit();
             if (winnerFound()) return;
             board.printBoard();
             nextMove = secondAgent.nextMove();
+            System.out.println(nextMove.toString());
             nextMove.admit();
             if (winnerFound()) return;
         }

@@ -17,7 +17,6 @@ public class AlphaBetaAgent extends MinMaxAgent {
     public Move nextMove() {
         Node root = new Node(false, true, null);
         alphaBeta(root, depth, -Double.MAX_VALUE, Double.MAX_VALUE);
-        System.out.println(root.selectedMove.toString());
         return root.selectedMove;
     }
 

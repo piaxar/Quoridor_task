@@ -126,6 +126,12 @@ public class Board {
         }
         return availableMoves;
     }
+    public LinkedList<Move> getAvailableMoves(Player player){
+        LinkedList<Move> moves = new LinkedList<>();
+        moves.addAll(getAvailablePawnMoves(player));
+        moves.addAll(getAvailableWallMoves(player));
+        return moves;
+    }
 
     public int getWallsLeft(Player player){
         return wallsLeft[player.index()];
@@ -255,4 +261,7 @@ public class Board {
     }
 
 
+    public Player getAnotherPlayer(Player currentPlayer) {
+        return currentPlayer == FIRST_PLAYER ? SECOND_PLAYER:FIRST_PLAYER;
+    }
 }

@@ -26,7 +26,6 @@ public class MinMaxAgent extends GameAgent {
     public Move nextMove() {
         Node root = new Node(false, true, null);
         minimax(root, depth);
-        System.out.println(root.selectedMove.toString());
         return root.selectedMove;
     }
 
