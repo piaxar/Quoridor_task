@@ -13,32 +13,26 @@ import java.util.Random;
  */
 public class MonteCarloAgent extends GameAgent {
 
-    final long GIVEN_TIME_MILLISECONDS;
-    long finishTime;
+    final int NUMBER_OF_ITERATIONS;
     Random random;
 
-    public MonteCarloAgent(Board board, Player maximizerPlayer, Player minimizerPlayer, long given_time_milliseconds) {
+    public MonteCarloAgent(Board board, Player maximizerPlayer, Player minimizerPlayer, int iterations) {
         super(board, maximizerPlayer, minimizerPlayer);
-        GIVEN_TIME_MILLISECONDS = given_time_milliseconds;
+        NUMBER_OF_ITERATIONS = iterations;
         random = new Random();
     }
 
     @Override
     public Move nextMove() {
-
-        finishTime = System.currentTimeMillis() + GIVEN_TIME_MILLISECONDS;
         MCST mcst = new MCST();
-        while (finishTime > System.currentTimeMillis()){
+        while (mcst.N < NUMBER_OF_ITERATIONS){
             mcst.makeIteration();
         }
-        System.out.println("total nodes: "+mcst.N);
         return mcst.getBestMove();
     }
 
-
-
     class MCST{
-        private final double C_COEFFICIENT = 2.0;
+        private final double C_COEFFICIENT = 7.0;
         private int N = 0; // total number of times nodes have been visited
         private Node root;
 
