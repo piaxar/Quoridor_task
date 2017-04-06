@@ -96,4 +96,14 @@ class PawnMoveTest {
         assertEquals(true, pm.isValid());
     }
 
+    @Test
+    void equalTest(){
+        Board b = new Board();
+        PawnMove pm1 = new PawnMove(Player.FIRST_PLAYER, b, 4, 4);
+        PawnMove pm2 = new PawnMove(Player.FIRST_PLAYER, b, 4, 4);
+        assertEquals(true, pm2.equals(pm1));
+        pm2 = new PawnMove(Player.FIRST_PLAYER, b, 5, 4);
+        assertEquals(false, pm2.equals(pm1));
+    }
+
 }

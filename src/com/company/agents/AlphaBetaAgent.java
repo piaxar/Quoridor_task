@@ -24,8 +24,6 @@ public class AlphaBetaAgent extends MinMaxAgent {
         if (n.move != null) n.move.admit();
         double result;
 
-//        System.out.println("min "+ min + " max "+ max);
-
         if (n.isLeaf || d == 0)
             result = n.evaluate();
         else {

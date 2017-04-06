@@ -118,4 +118,25 @@ public class PawnMove extends Move{
     public void rollback() {
         board.setPlayerPosition(player, rowFrom, columnFrom);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!PawnMove.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final PawnMove other = (PawnMove) obj;
+        if (this.rowFrom != other.rowFrom ||
+                this.rowTo != other.rowTo ||
+                this.columnFrom != other.columnFrom ||
+                this.columnTo != other.columnTo) {
+            return false;
+        }
+        if (this.player != other.player) {
+            return false;
+        }
+        return true;
+    }
 }

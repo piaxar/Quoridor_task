@@ -10,4 +10,7 @@ public abstract class Move {
     public abstract Boolean isValid();
     public abstract void admit();
     public abstract void rollback();
+
+    @Override
+    public abstract boolean equals(Object obj);
 }

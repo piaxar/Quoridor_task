@@ -27,12 +27,9 @@ public class MonteCarloAgent extends GameAgent {
     public Move nextMove() {
 
         finishTime = System.currentTimeMillis() + GIVEN_TIME_MILLISECONDS;
-//        System.out.println(System.currentTimeMillis());
-//        System.out.println(finishTime);
         MCST mcst = new MCST();
         while (finishTime > System.currentTimeMillis()){
             mcst.makeIteration();
-            //System.out.println("time left: " + Long.toString(finishTime-System.currentTimeMillis()));
         }
         System.out.println("total nodes: "+mcst.N);
         return mcst.getBestMove();
@@ -41,16 +38,17 @@ public class MonteCarloAgent extends GameAgent {
 
 
     class MCST{
-        private final double C_COEFFICIENT = 1.0;
+        private final double C_COEFFICIENT = 2.0;
         private int N = 0; // total number of times nodes have been visited
         private Node root;
 
         private class Node{
             Node parent;
             ArrayList<Node> children;
+            ArrayList<Move> addedMoves;
             Player currentPlayer;
-            int wins = 0;
-            int games = 0;
+            Double wins = 0.0;
+            Double games = 0.0;
             int n = 0; // number of times node has been visited
             Move move; // move to get to this node
 
@@ -59,11 +57,12 @@ public class MonteCarloAgent extends GameAgent {
                 this.move = move;
                 this.currentPlayer = currentPlayer;
                 children = new ArrayList<>();
+                addedMoves = new ArrayList<>();
             }
         }
 
         private double UCB(Node node){
-            return  (node.wins/node.games) + C_COEFFICIENT * Math.sqrt(Math.log(N) / node.n);
+            return (node.wins/node.games) + C_COEFFICIENT * Math.sqrt(Math.log(N) / node.n);
         }
 
         MCST(){
@@ -84,20 +83,15 @@ public class MonteCarloAgent extends GameAgent {
         }
 
         public void makeIteration(){
-            //System.out.println("selection");
             Node chosenNode = selection(root);
-            //System.out.println("expansion");
             chosenNode = expansion(chosenNode);
-            //System.out.println("simulation");
             chosenNode = simulation(chosenNode);
-            //System.out.println("backpropagation");
             backpropagation(chosenNode);
 
         }
 
         public Node selection(Node node){
             if (node.children.size() == 0) return node;
-            // searching for the biggest UCB
             Node bestChild = null;
             double maxUCB = -Double.MAX_VALUE;
             for (Node n: node.children){
@@ -107,27 +101,41 @@ public class MonteCarloAgent extends GameAgent {
                     maxUCB = localUCB;
                 }
             }
-            // admit move
-            // do not forget to rollback on backpropagation
             bestChild.move.admit();
             bestChild = selection(bestChild);
-            //System.out.println(N);
             return bestChild;
         }
 
         public Node expansion(Node node){
-            //System.out.println(node.currentPlayer.toString());
             LinkedList<Move> moves = board.getAvailableMoves(node.currentPlayer);
-            // TODO: add heuristic function to chose move
-            Move m = moves.get(random.nextInt(moves.size()));
-            Node child = new Node(node, m, board.getAnotherPlayer(node.currentPlayer));
+            Move best = null;
+            double bestValue = -Double.MAX_VALUE;
+            for (Move m: moves){
+                if (!node.addedMoves.contains(m)) {
+                    m.admit();
+                    node.addedMoves.add(m);
+                    double localBest = evaluate();
+                    if (bestValue < localBest) {
+                        bestValue = localBest;
+                        best = m;
+                    }
+                    m.rollback();
+                }
+            }
+            Node child = new Node(node, best, board.getAnotherPlayer(node.currentPlayer));
             node.children.add(child);
             child.move.admit();
             return child;
         }
 
+        private Double evaluate(){
+            // if isMaxNode - maximizer
+            if (board.inWinningPosition(maximizerPlayer)) return 1000.0;
+            if (board.inWinningPosition(minimizerPlayer)) return -1000.0;
+            return 1.2/(board.shortestPath(maximizerPlayer)) - 0.9/(board.shortestPath(minimizerPlayer));
+        }
+
         public Node simulation(Node node){
-            // TODO: add cleverer simulation
             int shMax = board.shortestPath(maximizerPlayer);
             int shMin = board.shortestPath(minimizerPlayer);
             if (shMax == shMin && node.currentPlayer == maximizerPlayer){
@@ -161,11 +169,5 @@ public class MonteCarloAgent extends GameAgent {
                 N++;
             }
         }
-
-
-
     }
-
-
-
 }

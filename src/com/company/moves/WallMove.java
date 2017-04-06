@@ -134,4 +134,21 @@ public class WallMove extends Move {
         admittedWallMoves.remove(this);
         board.incrementWalls(player);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!WallMove.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final WallMove other = (WallMove) obj;
+        if (this.anchorRow != other.anchorRow ||
+                this.anchorColumn != other.anchorColumn ||
+                this.direction != other.direction) {
+            return false;
+        }
+        return true;
+    }
 }
